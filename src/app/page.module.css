@@ -75,7 +75,7 @@
 }
 
 .portrait {
-  height: 420px;
+  height: 70vh;
   width: auto;
   opacity: 0.42;
   transform: scale(0.95);
