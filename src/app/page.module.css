@@ -1,0 +1,467 @@
+.novelRoot {
+  min-height: 100vh;
+  padding: 12px;
+  background-image: url("/images/backgrounds/scene-main.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.stage {
+  max-width: 1200px;
+  min-height: calc(100vh - 24px);
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: transparent;
+  position: relative;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+}
+
+.stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.hud,
+.portraitArea,
+.dialogueBox,
+.selectionModal,
+.bottomPanel,
+.startPanel {
+  position: relative;
+  z-index: 1;
+}
+
+.startPanel {
+  margin: auto;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 28px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  color: #171717;
+}
+
+.hud {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.portraitArea {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  min-height: 360px;
+  padding: 0 12px 0;
+  position: relative;
+}
+
+.portrait {
+  height: 420px;
+  width: auto;
+  opacity: 0.42;
+  transform: scale(0.95);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.portraitActive {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.mainPortraitWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: opacity 0.25s ease;
+}
+
+.mainPortraitVisible {
+  opacity: 1;
+}
+
+.mainPortraitHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wipeGroup {
+  position: absolute;
+  right: 14px;
+  bottom: 8px;
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.wipePortrait {
+  opacity: 0.45;
+  background: #00000038 top / 160% no-repeat;
+  border: 1px solid #ffffff59;
+  border-radius: 6px;
+  width: 120px;
+  height: 120px;
+  background-position: center top;
+  background-repeat: no-repeat;
+  transition: opacity 0.18s ease;
+}
+
+.wipePortraitActive {
+  opacity: 1;
+}
+
+.wipePortraitHidden {
+  display: none;
+}
+
+.selectionModal {
+  position: absolute;
+  inset: 20% 12% auto;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #171717;
+}
+
+.dialogueBox {
+  margin: 0 12px 10px;
+  background: rgba(18, 20, 28, 0.92);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+  min-height: 110px;
+}
+
+.dialogueTopBar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}
+
+.logToggleButton {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.speakerName {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.dialogueText {
+  line-height: 1.6;
+}
+
+.nextHint {
+  text-align: right;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.historyPanel {
+  width: min(920px, 92vw);
+  max-height: min(75vh, 760px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 10px;
+  background: rgba(18, 20, 28, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.historyOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.58);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.historyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.historyTitle {
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.historyCloseButton {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.historyEmpty {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.logTableWrap {
+  overflow-x: auto;
+}
+
+.logTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+  font-size: 13px;
+}
+
+.logTable th,
+.logTable td {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 8px;
+  vertical-align: top;
+}
+
+.logTable th {
+  background: rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.logTurnLabel {
+  font-size: 12px;
+  opacity: 0.86;
+  margin-bottom: 4px;
+}
+
+.logQuestionText {
+  line-height: 1.5;
+}
+
+.logMarkCell {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  vertical-align: middle !important;
+}
+
+.playerLogColumn {
+  background: rgba(122, 191, 255, 0.14);
+}
+
+.questionHit {
+  color: #ffd84a;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 216, 74, 0.35);
+}
+
+.bottomPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.handBar {
+  border: 1px solid #d7d7d7;
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.handBar span:first-child {
+  font-weight: 700;
+}
+
+.card {
+  border: 1px solid #d7d7d7;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111;
+}
+
+.resultCard {
+  width: 100%;
+}
+
+.resultMembers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resultMemberRow {
+  border: 1px solid #d6d6d6;
+  border-radius: 6px;
+  padding: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.grid3 select {
+  padding: 8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: #111;
+}
+
+.primaryButton {
+  width: fit-content;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #222;
+  background: #222;
+  color: #fff;
+  cursor: pointer;
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  width: fit-content;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.answerBox {
+  border: 1px solid #c8c8c8;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.answerOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: rgba(0, 0, 0, 0.58);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.answerModal {
+  width: min(760px, 92vw);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 10px;
+  background: rgba(18, 20, 28, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.success {
+  color: #0f8d33;
+  font-weight: 700;
+}
+
+.fail {
+  color: #c73232;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+
+  .portrait {
+    height: 280px;
+  }
+
+  .wipePortrait {
+    width: 120px;
+    height: 120px;
+  }
+
+  .bottomPanel {
+    gap: 8px;
+  }
+
+  .selectionModal {
+    inset: 18% 6% auto;
+  }
+}

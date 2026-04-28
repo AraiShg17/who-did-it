@@ -1,0 +1,97 @@
+{
+  "player": {
+    "nameJa": "プレイヤー",
+    "nameEn": "Player",
+    "position": "探偵役",
+    "personality": "状況を整理して推理する",
+    "trait": "論理的に質問を組み立てる",
+    "portrait": "",
+    "answerLines": {
+      "hasAny": "うん、僕はもってるのあるね。",
+      "hasNone": "それは僕はもってないね。"
+    },
+    "selfAnswerLines": {
+      "hasAny": "ちなみに僕は持ってるよ。",
+      "hasNone": "ちなみに僕は持ってないね。"
+    },
+    "questionLine": "「{suspect}、{weapon}、{location}」をもってるひと？",
+    "waitingLine": "次は私の番だね。",
+    "interruptLine": "わかった！これで答えが見えたよ。"
+  },
+  "cpu1": {
+    "nameJa": "白河 紬",
+    "nameEn": "Shirakawa Tsumugi",
+    "position": "クール・ミステリアス",
+    "personality": "無口で観察力が鋭い",
+    "trait": "違和感や嘘にすぐ気づく",
+    "portrait": "/images/characters/tsumugi-shirakawa.png",
+    "answerLines": {
+      "hasAny": ".....あります。",
+      "hasNone": "いいえ、持っていませんね。"
+    },
+    "selfAnswerLines": {
+      "hasAny": "ちなみに私は持っています。",
+      "hasNone": "ちなみに私は持っていませんね。"
+    },
+    "questionLine": "{suspect}、{weapon}、{location}を持っている人はいますか？",
+    "waitingLine": "次は私の番ですね。",
+    "interruptLine": ".....わかりました。答えを宣言します。"
+  },
+  "cpu2": {
+    "nameJa": "九条 アリサ",
+    "nameEn": "Kujo Arisa",
+    "position": "お嬢様・完璧タイプ",
+    "personality": "自信家で余裕がある",
+    "trait": "情報を多く持っている",
+    "portrait": "/images/characters/arisa-kujo.png",
+    "answerLines": {
+      "hasAny": "それ、ウチ持ってるやつある〜。",
+      "hasNone": "その3つ？ いや、ウチは持ってないかな〜。"
+    },
+    "selfAnswerLines": {
+      "hasAny": "私も持ってるんだけどね〜。",
+      "hasNone": "私は持ってないけどねー。"
+    },
+    "questionLine": "{suspect}、{weapon}、{location}、持ってる人いる〜？",
+    "waitingLine": "次ウチの番じゃん。いくよ〜。",
+    "interruptLine": "あ、わかったかも！ ウチ、答え言うね〜！"
+  },
+  "cpu3": {
+    "nameJa": "橘 ひなた",
+    "nameEn": "Tachibana Hinata",
+    "position": "ムードメーカー",
+    "personality": "明るくて距離が近い",
+    "trait": "場を動かすトリガー役",
+    "portrait": "/images/characters/hinata-tachibana.png",
+    "answerLines": {
+      "hasAny": "おっ、いいところ突くね！ その3つの中に僕の手札があるよ！",
+      "hasNone": "んー、その3つはハズレ！ 僕はどれも持ってないかな！"
+    },
+    "selfAnswerLines": {
+      "hasAny": "僕も持ってるんだけどね！",
+      "hasNone": "僕は持ってないよ！"
+    },
+    "questionLine": "みんなに質問！ {suspect}、{weapon}、{location}のどれか持ってる？",
+    "waitingLine": "よーし次は僕の番！ どんどん聞いていくよ！",
+    "interruptLine": "待って！ これ、もうわかったよ！"
+  },
+  "cpu4": {
+    "nameJa": "春宮 みゆ",
+    "nameEn": "Harumiya Miyu",
+    "position": "癒し系ヒロイン",
+    "personality": "優しくておっとり",
+    "trait": "感情の中心になる存在",
+    "portrait": "/images/characters/miyu-harumiya.png",
+    "answerLines": {
+      "hasAny": "えへへ、そこに私の手札が混ざってるよ。いい感じに絞れてるかも。",
+      "hasNone": "その3っつはもってないかなー！"
+    },
+    "selfAnswerLines": {
+      "hasAny": "私も持ってるんだけどね〜！",
+      "hasNone": "私は持ってないよ！"
+    },
+    "questionLine": "えっとね、{suspect}、{weapon}、{location}のどれかを持ってるか教えてくれる？",
+    "waitingLine": "次は私の番だね！いくよ！",
+    "interruptLine": "あっ、わかった！ 私、答えるね！"
+  }
+}
