@@ -5,6 +5,9 @@ substitutions:
   _OPENAI_API_KEY_SECRET_NAME: OPENAI_API_KEY
   _OPENAI_API_KEY_SECRET_VERSION: latest
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
   - id: Build image
     name: gcr.io/cloud-builders/docker
