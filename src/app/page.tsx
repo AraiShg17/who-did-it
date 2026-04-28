@@ -372,9 +372,18 @@ export default function Home() {
     setDialogueIndex(0);
   };
 
+  const handleStageClick = () => {
+    if (showHistory) return;
+    if (phase === "preTurn" && interruptDecision) {
+      endGameWithGuess(interruptDecision.winnerId, interruptDecision.guess);
+      return;
+    }
+    advanceDialogue();
+  };
+
   return (
     <main className={styles.novelRoot}>
-      <div className={styles.stage}>
+      <div className={styles.stage} onClick={handleStageClick}>
         {!game && (
           <div className={styles.startPanel}>
             <h1>犯人当て推理ゲーム</h1>
@@ -471,17 +480,7 @@ export default function Home() {
               </section>
             )}
 
-            <section
-              className={styles.dialogueBox}
-              onClick={() => {
-                if (showHistory) return;
-                if (phase === "preTurn" && interruptDecision) {
-                  endGameWithGuess(interruptDecision.winnerId, interruptDecision.guess);
-                  return;
-                }
-                advanceDialogue();
-              }}
-            >
+            <section className={styles.dialogueBox}>
               <div className={styles.dialogueTopBar}>
                 <button
                   className={styles.logToggleButton}
