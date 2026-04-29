@@ -157,6 +157,7 @@ const buildInterruptDecision = (
 
 export default function Home() {
   const [game, setGame] = useState<GameState | null>(null);
+  const [showRules, setShowRules] = useState(false);
   const [questionDraft, setQuestionDraft] = useState<Question>(EMPTY_QUESTION);
   const [guessDraft, setGuessDraft] = useState<Question>(EMPTY_QUESTION);
   const [cpuThinking, setCpuThinking] = useState(false);
@@ -384,12 +385,48 @@ export default function Home() {
   return (
     <main className={styles.novelRoot}>
       <div className={styles.stage} onClick={handleStageClick}>
+        {showRules && (
+          <div
+            className={styles.rulesOverlay}
+            onClick={(event) => {
+              event.stopPropagation();
+              setShowRules(false);
+            }}
+          >
+            <section
+              className={styles.rulesModal}
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
+            >
+              <div className={styles.historyHeader}>
+                <p className={styles.historyTitle}>ルール説明</p>
+                <button className={styles.historyCloseButton} onClick={() => setShowRules(false)}>
+                  閉じる
+                </button>
+              </div>
+              <p>目的: 場に伏せられた「人物・凶器・犯行現場」を当てること。</p>
+              <p>準備: 各参加者に「人物・凶器・犯行現場」のカードが1枚ずつ配られます。</p>
+              <p>ターン進行:</p>
+              <p>1. 手番プレイヤーは「人物・凶器・犯行現場」を1つずつ指定して質問する。</p>
+              <p>2. 他プレイヤーは、指定3枚のうち1枚以上を持っていれば「持っている」、0枚なら「持っていない」と答える。</p>
+              <p>3. どのカードを持っているかは公開されない。ログから候補を絞る。</p>
+              <p>終了条件: 誰かが最終解答を宣言した時点で終了（正解なら勝利、不正解でもその場で終了）。</p>
+            </section>
+          </div>
+        )}
+
         {!game && (
           <div className={styles.startPanel}>
             <h1>犯人当て推理ゲーム</h1>
-            <button className={`${styles.primaryButton} ${notoSansJp.className}`} onClick={startGame}>
-              ゲーム開始
-            </button>
+            <div className={styles.startActions}>
+              <button className={`${styles.primaryButton} ${notoSansJp.className}`} onClick={startGame}>
+                ゲーム開始
+              </button>
+              <button className={`${styles.secondaryButton} ${notoSansJp.className}`} onClick={() => setShowRules(true)}>
+                ルール
+              </button>
+            </div>
           </div>
         )}
 
@@ -522,8 +559,6 @@ export default function Home() {
                         : "進行中..."
                     : waitingMessage)}
               </p>
-              {phase === "preTurn" && interruptSpeaker && <p className={styles.nextHint}>クリックで結果へ</p>}
-              {phase === "dialogue" && <p className={styles.nextHint}>クリックで次へ</p>}
             </section>
 
             {showHistory && (

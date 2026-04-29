@@ -34,10 +34,13 @@ export type CpuDecision =
       guess: Question;
     };
 
-const pickRandom = <T,>(list: T[]) => list[Math.floor(Math.random() * list.length)];
-const rollPercent = (percent: number) => Math.random() * 100 < Math.max(0, Math.min(100, percent));
+const pickRandom = <T>(list: T[]) =>
+  list[Math.floor(Math.random() * list.length)];
+const rollPercent = (percent: number) =>
+  Math.random() * 100 < Math.max(0, Math.min(100, percent));
 
-const clueKey = (category: "suspect" | "weapon" | "location", value: string) => `${category}:${value}`;
+const clueKey = (category: "suspect" | "weapon" | "location", value: string) =>
+  `${category}:${value}`;
 
 const buildKnownHasByClue = (context: CpuQuestionContext) => {
   const participantIds = new Set<PlayerId>();
@@ -107,9 +110,11 @@ const collectCandidates = (context: CpuQuestionContext): CpuCandidateSet => {
   locations.delete(context.hand.location);
 
   for (const key of knownHas) {
-    if (key.startsWith("suspect:")) suspects.delete(key.replace("suspect:", ""));
+    if (key.startsWith("suspect:"))
+      suspects.delete(key.replace("suspect:", ""));
     if (key.startsWith("weapon:")) weapons.delete(key.replace("weapon:", ""));
-    if (key.startsWith("location:")) locations.delete(key.replace("location:", ""));
+    if (key.startsWith("location:"))
+      locations.delete(key.replace("location:", ""));
   }
 
   return {
@@ -133,31 +138,54 @@ const buildCandidateSetFromLogs = (
   });
 };
 
-const computeConfidence = (candidates: CpuCandidateSet, clueData: CpuQuestionContext["clueData"]) => {
-  const suspectConfidence = 1 - (Math.max(candidates.suspects.length - 1, 0) / Math.max(clueData.suspects.length - 1, 1));
-  const weaponConfidence = 1 - (Math.max(candidates.weapons.length - 1, 0) / Math.max(clueData.weapons.length - 1, 1));
+const computeConfidence = (
+  candidates: CpuCandidateSet,
+  clueData: CpuQuestionContext["clueData"],
+) => {
+  const suspectConfidence =
+    1 -
+    Math.max(candidates.suspects.length - 1, 0) /
+      Math.max(clueData.suspects.length - 1, 1);
+  const weaponConfidence =
+    1 -
+    Math.max(candidates.weapons.length - 1, 0) /
+      Math.max(clueData.weapons.length - 1, 1);
   const locationConfidence =
-    1 - (Math.max(candidates.locations.length - 1, 0) / Math.max(clueData.locations.length - 1, 1));
+    1 -
+    Math.max(candidates.locations.length - 1, 0) /
+      Math.max(clueData.locations.length - 1, 1);
 
   return (suspectConfidence + weaponConfidence + locationConfidence) / 3;
 };
 
 const isNinetyPercentReady = (candidates: CpuCandidateSet) => {
-  const counts = [candidates.suspects.length, candidates.weapons.length, candidates.locations.length];
+  const counts = [
+    candidates.suspects.length,
+    candidates.weapons.length,
+    candidates.locations.length,
+  ];
   const fixedCount = counts.filter((count) => count === 1).length;
   const maxCount = Math.max(...counts);
   return fixedCount >= 2 && maxCount <= 2;
 };
 
 const isCpu2Ready = (candidates: CpuCandidateSet) => {
-  const counts = [candidates.suspects.length, candidates.weapons.length, candidates.locations.length];
+  const counts = [
+    candidates.suspects.length,
+    candidates.weapons.length,
+    candidates.locations.length,
+  ];
   const fixedCount = counts.filter((count) => count === 1).length;
   const maxCount = Math.max(...counts);
   return fixedCount >= 2 && maxCount <= 3;
 };
 
 const isReadyByCpuRule = (cpuId: PlayerId, candidates: CpuCandidateSet) => {
-  if (candidates.suspects.length === 1 && candidates.weapons.length === 1 && candidates.locations.length === 1) {
+  if (
+    candidates.suspects.length === 1 &&
+    candidates.weapons.length === 1 &&
+    candidates.locations.length === 1
+  ) {
     return true;
   }
   if (cpuId === "cpu2") {
@@ -174,7 +202,12 @@ const getTurnsSinceSolveWindow = (context: CpuQuestionContext) => {
   let firstReadyOwnTurn = -1;
 
   for (let idx = 0; idx <= ownTurns.length; idx += 1) {
-    const snapshotLogs = context.logs.slice(0, idx === ownTurns.length ? context.logs.length : context.logs.indexOf(ownTurns[idx]));
+    const snapshotLogs = context.logs.slice(
+      0,
+      idx === ownTurns.length
+        ? context.logs.length
+        : context.logs.indexOf(ownTurns[idx]),
+    );
     const snapshotCandidates = buildCandidateSetFromLogs(
       context.cpuId,
       context.clueData,
@@ -191,25 +224,62 @@ const getTurnsSinceSolveWindow = (context: CpuQuestionContext) => {
   return Math.max(ownTurns.length - firstReadyOwnTurn, 0);
 };
 
-const buildBestGuess = (candidates: CpuCandidateSet, clueData: CpuQuestionContext["clueData"]): Question => ({
+const buildBestGuess = (
+  candidates: CpuCandidateSet,
+  clueData: CpuQuestionContext["clueData"],
+): Question => ({
   suspect: candidates.suspects[0] ?? clueData.suspects[0] ?? "",
   weapon: candidates.weapons[0] ?? clueData.weapons[0] ?? "",
   location: candidates.locations[0] ?? clueData.locations[0] ?? "",
 });
 
+const findAllNoneQuestion = (logs: TurnLog[]): Question | undefined => {
+  for (let idx = logs.length - 1; idx >= 0; idx -= 1) {
+    const log = logs[idx];
+    const allNone =
+      log.answers.length > 0 && log.answers.every((answer) => !answer.hasAny);
+    if (allNone) return log.question;
+  }
+  return undefined;
+};
+
 export const decideCpuSolve = (context: CpuQuestionContext) => {
+  const allNoneQuestion = findAllNoneQuestion(context.logs);
+  if (allNoneQuestion) {
+    return {
+      shouldSolve: true,
+      guess: allNoneQuestion,
+      confidence: 1,
+    };
+  }
+
   const localCandidates = collectCandidates(context);
   const candidates = context.aiCandidates
     ? {
-        suspects: localCandidates.suspects.filter((item) => context.aiCandidates?.suspects.includes(item)),
-        weapons: localCandidates.weapons.filter((item) => context.aiCandidates?.weapons.includes(item)),
-        locations: localCandidates.locations.filter((item) => context.aiCandidates?.locations.includes(item)),
+        suspects: localCandidates.suspects.filter((item) =>
+          context.aiCandidates?.suspects.includes(item),
+        ),
+        weapons: localCandidates.weapons.filter((item) =>
+          context.aiCandidates?.weapons.includes(item),
+        ),
+        locations: localCandidates.locations.filter((item) =>
+          context.aiCandidates?.locations.includes(item),
+        ),
       }
     : localCandidates;
   const safeCandidates: CpuCandidateSet = {
-    suspects: candidates.suspects.length > 0 ? candidates.suspects : localCandidates.suspects,
-    weapons: candidates.weapons.length > 0 ? candidates.weapons : localCandidates.weapons,
-    locations: candidates.locations.length > 0 ? candidates.locations : localCandidates.locations,
+    suspects:
+      candidates.suspects.length > 0
+        ? candidates.suspects
+        : localCandidates.suspects,
+    weapons:
+      candidates.weapons.length > 0
+        ? candidates.weapons
+        : localCandidates.weapons,
+    locations:
+      candidates.locations.length > 0
+        ? candidates.locations
+        : localCandidates.locations,
   };
   const baseConfidence = computeConfidence(safeCandidates, context.clueData);
   const ninetyReady = isNinetyPercentReady(safeCandidates);
@@ -218,17 +288,20 @@ export const decideCpuSolve = (context: CpuQuestionContext) => {
     safeCandidates.suspects.length === 1 &&
     safeCandidates.weapons.length === 1 &&
     safeCandidates.locations.length === 1;
-  const confidence = safeCandidates.suspects.length === 1 &&
+  const confidence =
+    safeCandidates.suspects.length === 1 &&
     safeCandidates.weapons.length === 1 &&
     safeCandidates.locations.length === 1
-    ? 1
-    : ninetyReady
-      ? 0.9
-      : baseConfidence;
+      ? 1
+      : ninetyReady
+        ? 0.9
+        : baseConfidence;
   const bestGuess = buildBestGuess(safeCandidates, context.clueData);
   const aiConfidence = Math.max(0, Math.min(1, context.aiConfidence ?? 1));
   const hasSingleResolvedCategory =
-    safeCandidates.suspects.length === 1 || safeCandidates.weapons.length === 1 || safeCandidates.locations.length === 1;
+    safeCandidates.suspects.length === 1 ||
+    safeCandidates.weapons.length === 1 ||
+    safeCandidates.locations.length === 1;
 
   if (fullySolved) {
     return {
@@ -246,7 +319,11 @@ export const decideCpuSolve = (context: CpuQuestionContext) => {
     };
   }
 
-  if (context.cpuId === "cpu3" && hasSingleResolvedCategory && confidence < 0.9) {
+  if (
+    context.cpuId === "cpu3" &&
+    hasSingleResolvedCategory &&
+    confidence < 0.9
+  ) {
     if (aiConfidence < 0.6) {
       return {
         shouldSolve: false,
@@ -317,7 +394,7 @@ export const buildCpuPrompt = (context: CpuQuestionContext) => {
   const candidates = collectCandidates(context);
   return {
     system:
-      "あなたは推理ゲームのCPUです。JSONのみを返してください。形式は {\"action\":\"question\",\"suspect\":\"...\",\"weapon\":\"...\",\"location\":\"...\",\"confidence\":0.0,\"suspectCandidates\":[\"...\"],\"weaponCandidates\":[\"...\"],\"locationCandidates\":[\"...\"]} または {\"action\":\"solve\",\"suspect\":\"...\",\"weapon\":\"...\",\"location\":\"...\",\"confidence\":0.0,\"suspectCandidates\":[\"...\"],\"weaponCandidates\":[\"...\"],\"locationCandidates\":[\"...\"]} のみです。",
+      'あなたは推理ゲームのCPUです。JSONのみを返してください。形式は {"action":"question","suspect":"...","weapon":"...","location":"...","confidence":0.0,"suspectCandidates":["..."],"weaponCandidates":["..."],"locationCandidates":["..."]} または {"action":"solve","suspect":"...","weapon":"...","location":"...","confidence":0.0,"suspectCandidates":["..."],"weaponCandidates":["..."],"locationCandidates":["..."]} のみです。',
     user: JSON.stringify(
       {
         instruction:
@@ -330,20 +407,42 @@ export const buildCpuPrompt = (context: CpuQuestionContext) => {
       2,
     ),
     fallback: {
-      suspect: pickRandom(candidates.suspects.length > 0 ? candidates.suspects : context.clueData.suspects),
-      weapon: pickRandom(candidates.weapons.length > 0 ? candidates.weapons : context.clueData.weapons),
+      suspect: pickRandom(
+        candidates.suspects.length > 0
+          ? candidates.suspects
+          : context.clueData.suspects,
+      ),
+      weapon: pickRandom(
+        candidates.weapons.length > 0
+          ? candidates.weapons
+          : context.clueData.weapons,
+      ),
       location: pickRandom(
-        candidates.locations.length > 0 ? candidates.locations : context.clueData.locations,
+        candidates.locations.length > 0
+          ? candidates.locations
+          : context.clueData.locations,
       ),
     },
   };
 };
 
-const sanitizeQuestion = (raw: Partial<Question> | undefined, fallback: Question, clueData: CpuQuestionContext["clueData"]): Question => {
-  const suspect = raw?.suspect && clueData.suspects.includes(raw.suspect) ? raw.suspect : fallback.suspect;
-  const weapon = raw?.weapon && clueData.weapons.includes(raw.weapon) ? raw.weapon : fallback.weapon;
+const sanitizeQuestion = (
+  raw: Partial<Question> | undefined,
+  fallback: Question,
+  clueData: CpuQuestionContext["clueData"],
+): Question => {
+  const suspect =
+    raw?.suspect && clueData.suspects.includes(raw.suspect)
+      ? raw.suspect
+      : fallback.suspect;
+  const weapon =
+    raw?.weapon && clueData.weapons.includes(raw.weapon)
+      ? raw.weapon
+      : fallback.weapon;
   const location =
-    raw?.location && clueData.locations.includes(raw.location) ? raw.location : fallback.location;
+    raw?.location && clueData.locations.includes(raw.location)
+      ? raw.location
+      : fallback.location;
 
   return { suspect, weapon, location };
 };
@@ -368,24 +467,33 @@ export const sanitizeCpuDecision = (
 };
 
 export const sanitizeAiAnalysis = (
-  raw: (Partial<Question> & {
-    confidence?: number;
-    suspectCandidates?: string[];
-    weaponCandidates?: string[];
-    locationCandidates?: string[];
-  }) | undefined,
+  raw:
+    | (Partial<Question> & {
+        confidence?: number;
+        suspectCandidates?: string[];
+        weaponCandidates?: string[];
+        locationCandidates?: string[];
+      })
+    | undefined,
   clueData: CpuQuestionContext["clueData"],
 ): CpuAiAnalysis | undefined => {
   if (!raw) return undefined;
-  const confidence = typeof raw.confidence === "number" ? Math.max(0, Math.min(1, raw.confidence)) : undefined;
+  const confidence =
+    typeof raw.confidence === "number"
+      ? Math.max(0, Math.min(1, raw.confidence))
+      : undefined;
   if (confidence === undefined) return undefined;
 
   const suspects =
-    raw.suspectCandidates?.filter((item) => clueData.suspects.includes(item)) ?? [];
+    raw.suspectCandidates?.filter((item) => clueData.suspects.includes(item)) ??
+    [];
   const weapons =
-    raw.weaponCandidates?.filter((item) => clueData.weapons.includes(item)) ?? [];
+    raw.weaponCandidates?.filter((item) => clueData.weapons.includes(item)) ??
+    [];
   const locations =
-    raw.locationCandidates?.filter((item) => clueData.locations.includes(item)) ?? [];
+    raw.locationCandidates?.filter((item) =>
+      clueData.locations.includes(item),
+    ) ?? [];
 
   return {
     confidence,
